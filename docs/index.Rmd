@@ -1,0 +1,171 @@
+---
+title: "Title"
+output:
+   xaringan::moon_reader:
+    css: ["xaringan-themer.css", "hygge"]
+    seal: false
+    self_contained: TRUE
+    nature:
+      slideNumberFormat: "%current%"
+      highlightStyle: github
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: true
+---
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(base_color = "#002060",
+                  text_color = "#002060",
+                  header_h1_font_size = "2.75rem",
+                  header_h2_font_size = "2.25rem",
+                  header_h3_font_size = "1.5rem",
+                  text_font_size = "1.25rem",
+                  footnote_font_size = "0.6em",
+                  header_font_google = google_font("Libre Baskerville", "700b"),
+  text_font_google   = google_font("Libre Baskerville", "400"),
+  code_font_google   = google_font("Arvo"),
+  footnote_color = "#002060",
+  footnote_position_bottom = "15px; position: absolute; bottom: 1em; left: 1em"
+  )
+```
+class: heading-slide, middle, center
+background-image: url("NurlanDauletbayev_BackgroundImage_2023-12-21.png")
+background-size: cover
+
+# Introduction to t-SNE
+
+## Nurlan Dauletbayev
+
+### Philipps-University of Marburg
+
+.footnote[21/12/2023]
+
+---
+background-image: url("NurlanDauletbayev_SecondPageImage_2023-12-21.png")
+background-size: cover
+
+```{css, echo=FALSE}
+.remark-slide-content > h2{
+  font-size: 36px;
+  margin-top: 5px;
+  margin-left: -40px
+}
+```
+
+
+## Comparison with PCA
+
+.left-column[
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+###PCA reduces dimensionality by:###]
+
+.right-column[
+> - Carrying out eigenvalue decomposition of the covariance or correlation matrix, derived from the original dataset
+
+> - Ranging the dataset variance from the highest to the lowest
+
+>  - Assumption: the majority of dataset variance is adequately represented in the first 2 dimensions of _principal components_
+
+> - “Packing” the original variables within a few artificial _principal components_ 
+
+.right[
+.tiny[_Principal components_ are linear combinations of the original variables]
+]
+]
+
+.footnote[N. Dauletbayev, 21/12/2023]
+
+---
+
+background-image: url("NurlanDauletbayev_SecondPageImage_2023-12-21.png")
+background-size: cover
+
+## Comparison with MDS
+
+.left-column[
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+###MDS reduces dimensionality by:###]
+
+.right-column[
+> - Carrying out eigenvalue decomposition of the pairwise distance matrix, derived from the original dataset
+
+> - Ranging the dataset variance from the highest to the lowest
+
+>  - Assumption: the majority of dataset variance is adequately represented in the first 2 dimensions of distance space (most commonly: Euclidean)
+
+> - Mapping the dataset (global and/or local structure) on a low-dimensional coordinate map 
+]
+
+.footnote[N. Dauletbayev, 21/12/2023]
+
+---
+
+background-image: url("NurlanDauletbayev_SecondPageImage_2023-12-21.png")
+background-size: cover
+
+## Limitations of PCA, MDS, and other metric methods
+
+- These methods treat the local (intercluster) distances similarly to the global (between-cluster) distances
+
+- Mapping of a large number of data points comes at the expence of the resolution
+
+- It may be useful to have tighter “scales” for intercluster distances to make potential clusters more “compact”
+
+.footnote[N. Dauletbayev, 21/12/2023]
+
+---
+
+background-image: url("NurlanDauletbayev_SecondPageImage_2023-12-21.png")
+background-size: cover
+
+## t-SNE (t-distributed Stochastic Neighbor Embedding)
+
+.left-column[
+**Steps**:]
+
+.right-column[.small[
+> 1. Quantification of similarity 1 between the original data points (= pairwise distance matrix 1): _"similarity of datapoint x ⱼ to datapoint x ᵢ is the conditional probability p{j | i}, that x ᵢ would pick x ⱼ as its neighbor"_
+
+> 2. Conversion of the distances to probability, adjusted for the Student’s t-distribution
+
+> 3. Random arrangement of the data points in a low-dimensional space (e.g., k = 2)
+
+> 4. Quantification of similarity 2 between the original data points in the low-dimensional space (= pairwise distance matrix 2)
+
+> 5. Comparision between similarity 2 vs. 1 by Kullback–Leibler divergence, optimization by gradient descent]
+
+]
+
+.footnote[N. Dauletbayev, 21/12/2023]
+
+---
+
+background-image: url("NurlanDauletbayev_SecondPageImage_2023-12-21.png")
+background-size: cover
+
+## Perplexity
+
+### One of the most important hyperparameters in t-SNE is "perplexity"
+
+Perplexity is defined as follows:
+
+$$\text{Perplexity}(\textbf{p}_i) = 2^{H(\textbf{p}_i)}$$
+The "_H_" stands for Shannon entropy of a discrete distribution
+
+
+$$H(\textbf{p}_i) = -\sum_i p_{j \mid i} \log_2 (p_{j \mid i})$$
+Perplexity is roughly equivalent to the assumed "k" number of “neighbors”. The  t-SNE approach is to maximally preserve the distances between the "neighbours"
+
+.footnote[N. Dauletbayev, 21/12/2023]
+
